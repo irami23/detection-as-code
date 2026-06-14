@@ -1,0 +1,40 @@
+title: Shadow Copy and Backup Deletion via System Utilities
+id: 6ff2c3c1-aad2-4cfa-bdca-9a58dd38c22c
+status: experimental
+description: >
+  Detects deletion of volume shadow copies, backup catalogs, or boot
+  recovery options via built-in Windows utilities. This is near-universal
+  precursor to ransomware encryption, used to inhibit victim recovery
+references:
+  - https://attack.mitre.org/techniques/T1490
+author: Iran Ramirez
+date: 2026-06-11
+tags:
+  - attack.impact
+  - attack.t1490
+logsource:
+  category: process_creation
+  product: Windows
+detection:
+  selection_vss:
+    Image|endswith:
+      - '\vssadmin.exe'
+      - '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadow'
+      - 'delete'
+  selection_wbadmin:
+    Image|endswith: '\wbadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'catalog'
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate backup maintenance windows (rare). Baseline, then allowlist
+    by parent process or known backup-management host.
+level: high

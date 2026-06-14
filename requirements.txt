@@ -1,0 +1,6 @@
+sigma-cli>=1.0.0
+pysigma-backend-splunk
+pysigma-backend-kusto
+pysigma-pipeline-sysmon
+pytest>=8.0
+PyYAML>=6.0
