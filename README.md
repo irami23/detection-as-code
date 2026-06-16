@@ -18,6 +18,7 @@ Detections are treated like software: they live in version control, are reviewed
 | Rule | Technique | Tactic | Severity |
 |------|-----------|--------|----------|
 | Shadow Copy and Backup Deletion | [T1490](https://attack.mitre.org/techniques/T1490/) — Inhibit System Recovery | Impact | High |
+| LSASS Memory Dumping via Common Tooling | [T1003.001](https://attack.mitre.org/techniques/T1003/001) - OS Credential Dumping: LSASS Memory | Credential Access | High |
 
 ## Repository structure
 

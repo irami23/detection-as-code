@@ -1,0 +1,37 @@
+title: LSASS Memory Dumping via Common Tooling
+id: 94f9ae17-22fb-4405-94e0-189726195721
+status: experimental
+description: >
+  Detects LSASS memory credential dumping 
+references:
+  - https://attack.mitre.org/techniques/T1003/001
+author: Iran Ramirez
+date: 2026-06-15
+tags:
+  - attack.credential_access
+  - attack.t1003.001
+logsource:
+  category: process_creation
+  product: Windows
+detection:
+  rundll32:
+    Image|endswith: '\rundll32.exe'
+  comsvcs:
+      CommandLine|contains: 'comsvcs'
+  dump_indicator:
+    CommandLine|contains:
+      - 'Minidump'
+      - '#24'
+      - '#-24'
+  procdump:
+    Image|endswith: 
+    - '\procdump.exe'
+    - '\procdump64.exe'
+    CommandLine|contains: 'lsass'
+  mimikatz_cli:
+    Image|endswith: '\mimikatz.exe'
+    CommandLine|contains: 'sekurlsa::'
+  condition: (rundll32 and comsvcs and dump_indicator) or procdump or mimikatz_cli
+falsepositives:
+  - Legitimate administrative or troubleshooting memory dumps of LSASS via ProcDump (rare; baseline known admin hosts)
+level: high
