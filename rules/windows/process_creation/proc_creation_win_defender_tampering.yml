@@ -1,0 +1,45 @@
+title: Disabling or Modifying Windows Defender - Impairing Defenses
+id: 26106e3e-8696-4091-b78e-fabd48a64fd2
+status: experimental
+description: >
+  Detects command-line tampering with Microsoft Defender — disabling
+  protection features via Set-MpPreference or stopping the Defender
+  service — commonly used to evade detection before further activity.
+references:
+  - https://attack.mitre.org/techniques/T1562/001/
+author: Iran Ramirez
+date: 2026-06-15
+tags:
+  - attack.defense_evasion
+  - attack.t1562.001
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  set_mppreference:
+    CommandLine|contains: 'Set-MpPreference'
+  disable_flags:
+    CommandLine|contains: 
+    - 'DisableRealtimeMonitoring'
+    - 'DisableBehaviorMonitoring'
+    - 'DisableIOAVProtection'
+    - 'MAPSReporting Disabled'
+  add_exclusion:
+    CommandLine|contains|all:
+      - 'Add-MpPreference'
+      - 'Exclusion'
+  service_stop:
+    Image|endswith: 
+    - '\sc.exe'
+    - '\net.exe'
+    CommandLine|contains: 'stop WinDefend'
+  service_disable:
+    Image|endswith: '\sc.exe'
+    CommandLine|contains|all:
+      - 'config'
+      - 'WinDefend'
+      - 'disabled'
+  condition: (set_mppreference and disable_flags) or add_exclusion or service_stop or service_disable
+falsepositives:
+  - Legitimate Defender configuration by administrators or software installers, particularly exclusion additions
+level: high

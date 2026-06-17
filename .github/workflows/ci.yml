@@ -18,6 +18,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Lint rules (Sigma validators + best practices)
-        run: sigma check rules/
+        run: sigma check rules/ --validation-config validation-config.yml
       - name: Test (metadata governance + conversion regression)
         run: pytest -q

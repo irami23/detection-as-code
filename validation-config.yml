@@ -1,0 +1,7 @@
+# Run all default Sigma validators EXCEPT attack_tag.
+# attack_tag downloads MITRE ATT&CK data to validate tags and throws false
+# positives on valid tags when that data loads incompletely. ATT&CK technique
+# tagging is enforced reliably instead by tests/test_rules_valid.py.
+validators:
+  - all
+  - -attacktag
