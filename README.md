@@ -19,6 +19,8 @@ Detections are treated like software: they live in version control, are reviewed
 |------|-----------|--------|----------|
 | Shadow Copy and Backup Deletion | [T1490](https://attack.mitre.org/techniques/T1490/) — Inhibit System Recovery | Impact | High |
 | LSASS Memory Dumping via Common Tooling | [T1003.001](https://attack.mitre.org/techniques/T1003/001) - OS Credential Dumping: LSASS Memory | Credential Access | High |
+| Windows Defender Tampering | [T1562.001](https://attack.mitre.org/techniques/T1562/001/) — Impair Defenses: Disable or Modify Tools | Defense Evasion | High |
+| Suspicious Scheduled Task Creation | [T1053.005](https://attack.mitre.org/techniques/T1053/005/) — Scheduled Task | Persistence | High |
 
 ## Repository structure
 
