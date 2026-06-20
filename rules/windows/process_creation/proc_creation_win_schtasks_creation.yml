@@ -1,0 +1,48 @@
+title: Suspicious Scheduled Task Creation via schtasks.exe
+id: 8fa972f4-245b-4b22-95dc-69ca498cbbfe
+status: experimental
+description: >
+  Detects creation of scheduled tasks via the schtasks.exe command-line
+  utility where the task definition contains high-signal indicators of abuse:
+  a remote payload URL, execution from a user-writable path, or encoded/hidden
+  PowerShell. This targets the common command-line creation method paired with
+  suspicious context and is intentionally NOT a catch-all — scheduled tasks
+  created through PowerShell cmdlets, WMI, or the Task Scheduler COM API do not
+  invoke schtasks.exe and are not covered here (those require detection on
+  Windows Security Event ID 4698). The OriginalFileName check additionally
+  catches a renamed schtasks.exe binary.
+references:
+  - https://attack.mitre.org/techniques/T1053/005/
+  - https://redcanary.com/threat-detection-report/techniques/scheduled-task/
+author: Iran Ramirez
+date: 2026-06-19
+tags:
+  - attack.persistence
+  - attack.execution
+  - attack.privilege_escalation
+  - attack.t1053.005
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_schtasks:
+    - Image|endswith: '\schtasks.exe'
+  selection_create:
+    CommandLine|contains: '/create'
+  selection_suspicious:
+    CommandLine|contains:
+      - 'http://'
+      - 'https://'
+      - '\Users\Public\'
+      - '\AppData\'
+      - '\Temp\'
+      - '\ProgramData\'
+      - '-enc'
+      - 'FromBase64String'
+      - '-w hidden'
+      - '-windowstyle hidden'
+  condition: selection_schtasks and selection_create and selection_suspicious
+falsepositives:
+  - Some legitimate user applications (e.g., Teams, Slack, Zoom updaters) create scheduled tasks that run from AppData; baseline and allowlist these known task-creators in your environment
+  - Administrative scripts that legitimately stage tooling in user-writable paths (uncommon when combined with these indicators)
+level: high
