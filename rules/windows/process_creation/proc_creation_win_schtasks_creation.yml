@@ -27,6 +27,7 @@ logsource:
 detection:
   selection_schtasks:
     - Image|endswith: '\schtasks.exe'
+    - OriginalFileName: 'schtasks.exe'
   selection_create:
     CommandLine|contains: '/create'
   selection_suspicious:
